@@ -1,0 +1,42 @@
+//    Název souboru: schema.prisma
+//    Autor: Maksim Kalutski (xkalut00) 
+//    Datum vytvoření: 05/12/2023
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  description String?
+  date        DateTime
+  amount      Int
+  isIncome    Boolean @default(false)
+}
+
+model Category {
+  id          Int    @id @default(autoincrement())
+  name        String
+  iconName    String
+  Transaction Transaction[]
+  Goal        Goal[]
+  isIncome    Boolean @default(false)
+}
+
+model Goal {
+  id          Int      @id @default(autoincrement())
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  name        String
+  date        DateTime
+  amount      Int
+  isSpend     Boolean @default(true)
+}
